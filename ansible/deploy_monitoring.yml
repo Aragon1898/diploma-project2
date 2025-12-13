@@ -1,0 +1,30 @@
+---
+- name: Deploy Monitoring Stack
+  hosts: monitoring
+  become: yes
+  tasks:
+    - name: Copy Prometheus Config
+      copy:
+        src: prometheus.yml
+        dest: /home/ubuntu/prometheus.yml
+        mode: '0644'
+
+    - name: Start Prometheus Container
+      docker_container:
+        name: prometheus
+        image: prom/prometheus:latest
+        state: started
+        restart_policy: always
+        ports:
+          - "9090:9090"
+        volumes:
+          - /home/ubuntu/prometheus.yml:/etc/prometheus/prometheus.yml
+
+    - name: Start Grafana Container
+      docker_container:
+        name: grafana
+        image: grafana/grafana:latest
+        state: started
+        restart_policy: always
+        ports:
+          - "3000:3000"

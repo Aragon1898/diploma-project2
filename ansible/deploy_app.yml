@@ -1,0 +1,18 @@
+---
+- name: Deploy Web Application
+  hosts: app   # Выполняем ТОЛЬКО на сервере приложений
+  become: yes
+  tasks:
+    - name: Install Python Docker library
+      apt:
+        name: python3-docker
+        state: present
+
+    - name: Start Nginx Container
+      docker_container:
+        name: my-web-app
+        image: nginx:latest
+        state: started
+        restart_policy: always
+        ports:
+          - "80:80"  # Пробрасываем порт (Внешний:Внутренний)
