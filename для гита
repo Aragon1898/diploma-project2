@@ -1,0 +1,17 @@
+git init
+git add .
+git commit -m "Initial commit: Infrastructure and CI/CD setup"
+git branch -M main
+git remote add origin https://github.com/ТВОЙ_НИК/ТВОЙ_РЕПОЗИТОРИЙ.git
+git push -u origin main
+
+
+load_balancer_ip = "158.160.172.167"
+monitoring_ip = "89.169.159.247"
+tools_ip = "89.169.140.156"
+
+http://158.160.172.167/ - нгинкс
+http://89.169.159.247:3000 - гафана
+http://158.160.41.55:8081 - сонар
+http://158.160.41.55:9000 - нексус
+http://89.169.159.247:9090/targets - прометей
