@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Обязательно для SonarQube
+          fetch-depth: 0
 
       - name: SonarQube Scan
         uses: sonarsource/sonarqube-scan-action@master
@@ -19,15 +19,14 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         with:
-          # ВОТ ЧЕГО НЕ ХВАТАЛО: Мы явно указываем имя проекта
-          args: >
-            -Dsonar.projectKey=diploma-project
+          # Пишем в одну строку, чтобы исключить ошибки отступов
+          args: -Dsonar.projectKey=diploma-project
 
   deploy:
     needs: sonarqube
     name: Deploy to Servers
     runs-on: ubuntu-latest
-    if: success() # Запускать деплой только если анализ прошел успешно
+    if: success()
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
