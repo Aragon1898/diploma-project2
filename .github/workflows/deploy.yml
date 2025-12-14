@@ -1,0 +1,52 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "main", "master" ]
+
+jobs:
+  sonarqube:
+    name: SonarQube Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Важно для SonarQube
+
+      - name: SonarQube Scan
+        uses: sonarsource/sonarqube-scan-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
+  # Этот шаг запустится, только если SonarQube пройдет успешно
+  deploy:
+    needs: sonarqube
+    name: Deploy to Servers
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Создаем файл ключа из секрета, чтобы Ansible мог зайти на сервер
+      - name: Setup SSH Key
+        run: |
+          mkdir -p ~/.ssh/
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+
+      - name: Create Inventory File
+        run: |
+          echo "${{ secrets.ANSIBLE_INVENTORY }}" > ansible/hosts.ini
+
+      - name: Install Ansible
+        run: pip install ansible
+
+      - name: Run Ansible Playbook
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: "False"
+        run: |
+          # Переходим в папку ansible и запускаем
+          cd ansible
+          # Тут можно запускать любой плейбук. Для теста запустим Docker
+          ansible-playbook -i hosts.ini install_docker.yml --private-key ~/.ssh/id_ed25519
