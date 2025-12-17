@@ -26,6 +26,8 @@
 4.  Запустить плейбуки: `ansible-playbook -i hosts.ini install_docker.yml`.
 
 ##  Доступы
-*   **Web App:** http://<APP_IP>
-*   **Grafana:** http://<MONITORING_IP>:3000
-*   **SonarQube:** http://<TOOLS_IP>:9000
+*   **Веб-приложение (Nginx):** http://158.160.172.167
+*   **Мониторинг (Grafana):** http://89.169.159.247:3000
+*   **Сбор метрик (Prometheus):** http://89.169.159.247:9090
+*   **Качество кода (SonarQube):** http://130.193.49.218:9000
+*   **Хранилище артефактов (Nexus):** http://130.193.49.218:8081
